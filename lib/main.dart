@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:vtweb/services/auth/auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -66,8 +68,13 @@ class MyApp extends StatelessWidget {
                   ),
                   SizedBox(height: 20), // Espaço entre o container e o botão de login
                   ElevatedButton(
-                    onPressed: () {
-                      // Implemente o login com o Google aqui
+                     onPressed: () async {
+                      User? user = await signInWithGoogle();
+                      if (user != null) {
+                        print("Login bem-sucedido: ${user.displayName}");
+                        // Navegue para a próxima tela após o login bem-sucedido
+                        // Navigator.of(context).push(MaterialPageRoute(builder: (context) => NextScreen()));
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.blue, backgroundColor: Colors.white, // Cor do texto do botão
@@ -84,3 +91,130 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

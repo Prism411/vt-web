@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "973375648827",
+    "project_id": "visage-track-2cbb2",
+    "storage_bucket": "visage-track-2cbb2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973375648827:android:0c5c2c10d100c8b813d81e",
+        "android_client_info": {
+          "package_name": "com.unir.vtweb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973375648827-aeiuugrmodv6ergklvcdp5o0uipump8k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASJhUiYWYaFswDuNB6jCGY9qyGQhYiwT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973375648827-aeiuugrmodv6ergklvcdp5o0uipump8k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
