@@ -1,42 +1,32 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-// Modelo de dados para o usuário
 class UserData {
   final String name;
   final int faltas;
   final String humor;
+  final String graphImage; // Nova propriedade
 
-  UserData({required this.name, required this.faltas, required this.humor});
+  UserData({
+    required this.name,
+    required this.faltas,
+    required this.humor,
+    required this.graphImage, // Inicialização da nova propriedade
+  });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
-      name: json['name'],
+      name: json['name'], 
       faltas: json['faltas'],
       humor: json['humor'],
+      graphImage: json['graphImage'], // Atribuição da nova propriedade
     );
   }
 }
 
-// Simula a chamada de API para buscar os dados dos usuários
-Future<List<UserData>> fetchUserData() async {
-  // Simulando atraso da chamada de rede
-  await Future.delayed(Duration(seconds: 2));
-
-  // Simula os dados que seriam recebidos da sua API
-  List<Map<String, dynamic>> jsonData = [
-    {"name": "Usuario 1", "faltas": 2, "humor": "Bom"},
-    {"name": "Usuario 2", "faltas": 0, "humor": "Ótimo"},
-    // Adicione mais usuários conforme necessário
-  ];
-
-  return jsonData.map((user) => UserData.fromJson(user)).toList();
-}
-
-// Função para a chamada real da API será adicionada aqui posteriormente
-/*
-Future<List<UserData>> fetchUserData() async {
-  final response = await http.get(Uri.parse('SUA_URL_DA_API'));
+  Future<List<UserData>> fetchUserData() async {
+  final uri = Uri.parse('http://localhost:8080/fetchUserData');
+  final response = await http.get(uri);
 
   if (response.statusCode == 200) {
     List<dynamic> body = jsonDecode(response.body);
@@ -45,4 +35,4 @@ Future<List<UserData>> fetchUserData() async {
     throw Exception('Falha ao carregar dados');
   }
 }
-*/
+

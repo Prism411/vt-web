@@ -12,12 +12,14 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.6
   provider: ^6.1.2
+  path_provider: ^2.0.2
   google_fonts: ^6.2.1
   google_sign_in: ^6.2.1
   firebase_core: ^2.25.4
   cloud_functions: ^4.6.0
   firebase_auth: ^4.17.5
   cloud_firestore: ^4.15.5
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -27,4 +29,5 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/background.png
+    - assets/graphs/
     - assets/graphs/regressao_10.png

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:vtweb/services/call/model.dart';
- // Certifique-se de importar o call.dart corretamente
+import 'package:vtweb/services/call/model.dart'; // Certifique-se de importar o call.dart corretamente
 
 class AnalysisScreen extends StatefulWidget {
   final User currentUser;
@@ -15,7 +14,6 @@ class AnalysisScreen extends StatefulWidget {
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
   List<UserData> _usersData = []; // Lista para armazenar os dados dos usuários
-  String _graphImage = 'assets/graphs/regressao_10.png'; // Caminho inicial da imagem
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +54,16 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               padding: EdgeInsets.all(10),
               child: Column(
                 children: [
-                  Expanded(
-                    child: Image.asset(_graphImage, fit: BoxFit.cover),
-                  ),
+                  if (_usersData.isNotEmpty) // Verifica se _usersData não está vazio
+                    Expanded(
+                      child: Image.asset(_usersData.first.graphImage, fit: BoxFit.cover),
+                    ),
                   ElevatedButton(
                     onPressed: () async {
                       var usersData = await fetchUserData();
-                      // Simulação: Atualize _graphImage com um novo caminho se necessário
                       setState(() {
                         _usersData = usersData;
-                        _graphImage = 'assets/graphs/regressao_20.png'; // Atualize conforme necessário
+                        // Não é necessário atualizar _graphImage aqui, pois cada UserData agora contém sua própria imagem
                       });
                     },
                     child: Text('Começar Simulação'),
