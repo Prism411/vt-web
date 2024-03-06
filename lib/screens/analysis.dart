@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:vtweb/services/call/model.dart';
+ // Certifique-se de importar o call.dart corretamente
 
 class AnalysisScreen extends StatefulWidget {
   final User currentUser;
@@ -12,19 +14,17 @@ class AnalysisScreen extends StatefulWidget {
 }
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
-  // Substitua 'graph_1' pelo caminho da sua imagem que será atualizada constantemente
-  final String graphImage = 'assets/graph_1.png';
+  List<UserData> _usersData = []; // Lista para armazenar os dados dos usuários
+  String _graphImage = 'assets/graphs/regressao_10.png'; // Caminho inicial da imagem
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text(
           'Olá, ${widget.currentUser.displayName}',
-          style: TextStyle(
-              fontSize: 24,
-              color: Colors.white,
-          ),
+          style: TextStyle(fontSize: 24, color: Colors.white),
         ),
         actions: [
           IconButton(
@@ -41,11 +41,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             child: Container(
               padding: EdgeInsets.all(10),
               child: ListView.builder(
-                itemCount: 10, // Supondo 10 linhas de dados
+                itemCount: _usersData.length, // Usa o tamanho da lista de dados dos usuários
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text('Nome $index'), // Substitua pelos dados reais
-                    subtitle: Text('Faltas: ${index * 2}, Humor: Bom'), // Substitua pelos dados reais
+                    title: Text(_usersData[index].name), // Usa o nome do usuário
+                    subtitle: Text('Faltas: ${_usersData[index].faltas}, Humor: ${_usersData[index].humor}'), // Usa faltas e humor
                   );
                 },
               ),
@@ -57,13 +57,18 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               child: Column(
                 children: [
                   Expanded(
-                    child: Image.asset(graphImage, fit: BoxFit.cover),
+                    child: Image.asset(_graphImage, fit: BoxFit.cover),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      // Atualize a imagem ou implemente outra ação
+                    onPressed: () async {
+                      var usersData = await fetchUserData();
+                      // Simulação: Atualize _graphImage com um novo caminho se necessário
+                      setState(() {
+                        _usersData = usersData;
+                        _graphImage = 'assets/graphs/regressao_20.png'; // Atualize conforme necessário
+                      });
                     },
-                    child: Text('Atualizar Gráfico'),
+                    child: Text('Começar Simulação'),
                   ),
                 ],
               ),

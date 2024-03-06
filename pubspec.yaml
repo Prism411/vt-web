@@ -27,3 +27,4 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/background.png
+    - assets/graphs/regressao_10.png
