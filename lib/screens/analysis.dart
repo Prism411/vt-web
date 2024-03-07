@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:vtweb/services/call/model.dart'; // Certifique-se de importar o call.dart corretamente
+import 'package:http/http.dart' as http;
+import 'package:vtweb/services/call/model.dart'; // Certifique-se de que este caminho está correto
 
 class AnalysisScreen extends StatefulWidget {
   final User currentUser;
@@ -13,7 +15,24 @@ class AnalysisScreen extends StatefulWidget {
 }
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
-  List<UserData> _usersData = []; // Lista para armazenar os dados dos usuários
+  List<UserData> _usersData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserDataFromModel();
+  }
+
+  Future<void> fetchUserDataFromModel() async {
+    try {
+      final usersData = await fetchUserData(); // Supondo que esta função está definida em 'model.dart'
+      setState(() {
+        _usersData = usersData;
+      });
+    } catch (e) {
+      print('Erro ao buscar os dados: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +58,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             child: Container(
               padding: EdgeInsets.all(10),
               child: ListView.builder(
-                itemCount: _usersData.length, // Usa o tamanho da lista de dados dos usuários
+                itemCount: _usersData.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(_usersData[index].name), // Usa o nome do usuário
-                    subtitle: Text('Faltas: ${_usersData[index].faltas}, Humor: ${_usersData[index].humor}'), // Usa faltas e humor
+                    title: Text(_usersData[index].name),
+                    subtitle: Text('Humor: ${_usersData[index].humor}'),
                   );
                 },
               ),
@@ -54,19 +73,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               padding: EdgeInsets.all(10),
               child: Column(
                 children: [
-                  if (_usersData.isNotEmpty) // Verifica se _usersData não está vazio
+                    // Ajuste a exibição da imagem conforme necessário
                     Expanded(
-                      child: Image.asset(_usersData.first.graphImage, fit: BoxFit.cover),
+                      child: Image.network('http://189.31.9.230:8080/packages/graph/regressao_20.png'),
                     ),
                   ElevatedButton(
-                    onPressed: () async {
-                      var usersData = await fetchUserData();
-                      setState(() {
-                        _usersData = usersData;
-                        // Não é necessário atualizar _graphImage aqui, pois cada UserData agora contém sua própria imagem
-                      });
-                    },
-                    child: Text('Começar Simulação'),
+                    onPressed: fetchUserDataFromModel,
+                    child: Text('Recarregar Dados'),
                   ),
                 ],
               ),
