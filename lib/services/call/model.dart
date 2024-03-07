@@ -24,14 +24,15 @@ class UserData {
   }
 }
 
-Future<UserData> fetchUserData(int index) async {
-  final response = await http.get(Uri.parse('http://localhost:8080/sendUserData/$index'));
+Future<List<UserData>> fetchUsersDataBlock(int bloco) async {
+  final response = await http.get(Uri.parse('http://localhost:8080/usuarios?bloco=$bloco'));
 
   if (response.statusCode == 200) {
-    Map<String, dynamic> jsonResponse = json.decode(response.body);
-    return UserData.fromJson(jsonResponse);
+    List<dynamic> jsonResponse = json.decode(response.body);
+    return jsonResponse.map((data) => UserData.fromJson(data)).toList();
   } else {
-    throw Exception('Falha ao carregar dados do servidor');
+    throw Exception('Falha ao carregar dados do bloco $bloco');
   }
 }
+
 
