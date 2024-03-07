@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:vtweb/services/call/model.dart'; // Certifique-se de que este caminho está correto
+import 'package:vtweb/services/call/model.dart'; // Substitua pela localização correta de onde sua classe UserData está definida.
 
 class AnalysisScreen extends StatefulWidget {
   final User currentUser;
@@ -11,26 +10,37 @@ class AnalysisScreen extends StatefulWidget {
   AnalysisScreen({Key? key, required this.currentUser}) : super(key: key);
 
   @override
-  State<AnalysisScreen> createState() => _AnalysisScreenState();
+  _AnalysisScreenState createState() => _AnalysisScreenState();
 }
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
-  List<UserData> _usersData = [];
+  List<UserData> usersData = []; // Lista para armazenar os dados dos usuários
 
   @override
   void initState() {
     super.initState();
-    fetchUserDataFromModel();
+    // Chamada inicial para buscar os dados dos usuários
+    fetchAllUserData();
   }
 
-  Future<void> fetchUserDataFromModel() async {
-    try {
-      final usersData = await fetchUserData(); // Supondo que esta função está definida em 'model.dart'
-      setState(() {
-        _usersData = usersData;
-      });
-    } catch (e) {
-      print('Erro ao buscar os dados: $e');
+  // Função para buscar todos os UserData.
+  Future<void> fetchAllUserData() async {
+    // Limpa a lista existente para garantir que os dados sejam realmente atualizados
+    usersData.clear();
+    
+    for (int i = 0; i < 10; i++) {
+      try {
+        final response = await http.get(Uri.parse('http://localhost:8080/sendUserData/$i'));
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> jsonResponse = json.decode(response.body);
+          final userData = UserData.fromJson(jsonResponse);
+          setState(() {
+            usersData.add(userData);
+          });
+        }
+      } catch (e) {
+        print('Erro ao buscar os dados: $e');
+      }
     }
   }
 
@@ -38,54 +48,32 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Olá, ${widget.currentUser.displayName}'),
         backgroundColor: Colors.blue,
-        title: Text(
-          'Olá, ${widget.currentUser.displayName}',
-          style: TextStyle(fontSize: 24, color: Colors.white),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: () {
-              // Implemente a abertura da janela de notificações aqui
-            },
-          ),
-        ],
       ),
       body: Row(
         children: [
           Expanded(
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: ListView.builder(
-                itemCount: _usersData.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_usersData[index].name),
-                    subtitle: Text('Humor: ${_usersData[index].humor}'),
-                  );
-                },
-              ),
+            child: ListView.builder(
+              itemCount: usersData.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(usersData[index].name),
+                  subtitle: Text('Humor: ${usersData[index].humor}\nFaltas: ${usersData[index].faltas}'),
+                );
+              },
             ),
           ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                children: [
-                    // Ajuste a exibição da imagem conforme necessário
-                    Expanded(
-                      child: Image.network('http://189.31.9.230:8080/packages/graph/regressao_20.png'),
-                    ),
-                  ElevatedButton(
-                    onPressed: fetchUserDataFromModel,
-                    child: Text('Recarregar Dados'),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          if (usersData.isNotEmpty) // Verifica se a lista não está vazia antes de tentar acessar
+            Image.network(usersData[0].filepath, width: 100, height: 100),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          fetchAllUserData();
+        },
+        tooltip: 'Recarregar Dados',
+        child: Icon(Icons.refresh),
       ),
     );
   }

@@ -4,38 +4,34 @@ import 'package:http/http.dart' as http;
 class UserData {
   final String name;
   final String humor;
+  final int faltas;
+  final String filepath; // Adicionado o novo campo
 
-  UserData({required this.name, required this.humor});
+  UserData({
+    required this.name,
+    required this.humor,
+    required this.faltas,
+    required this.filepath, // Inicializar no construtor
+  });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
-      name: json['Name'], // Certifique-se de que a chave corresponde ao seu JSON
-      humor: json['Humor'], // Certifique-se de que a chave corresponde ao seu JSON
+      name: json['name'],
+      humor: json['humor'],
+      faltas: json['faltas'],
+      filepath: json['filepath'], // Extrair do JSON
     );
   }
 }
 
-Future<List<UserData>> fetchUserData() async {
-  final uri = Uri.parse('http://localhost:8080/updateHumor'); // URL atualizada
-  final response = await http.get(uri, headers: {"Accept": "application/json"});
+Future<UserData> fetchUserData(int index) async {
+  final response = await http.get(Uri.parse('http://localhost:8080/sendUserData/$index'));
 
   if (response.statusCode == 200) {
-    List<dynamic> body = json.decode(response.body);
-    return body.map((dynamic item) => UserData.fromJson(item)).toList();
+    Map<String, dynamic> jsonResponse = json.decode(response.body);
+    return UserData.fromJson(jsonResponse);
   } else {
-    throw Exception('Falha ao carregar dados');
+    throw Exception('Falha ao carregar dados do servidor');
   }
 }
 
-void main() async {
-  try {
-    List<UserData> users = await fetchUserData();
-    for (var user in users) {
-      print('Nome: ${user.name}');
-      print('Humor: ${user.humor}');
-      // O link da imagem não será impresso, pois não está sendo processado na requisição atual
-    }
-  } catch (e) {
-    print('Erro ao buscar os dados: $e');
-  }
-}
