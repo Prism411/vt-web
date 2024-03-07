@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:vtweb/screens/analysis.dart';
 import 'package:vtweb/services/auth/auth.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,12 +30,7 @@ class MyApp extends StatelessWidget {
         ),
         body: Stack(
           children: [
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/background.png',
-                fit: BoxFit.cover,
-              ),
-            ),
+            ImageFader(), // Usando ImageFader para alternar imagens com fade
             Positioned.fill(
               child: Container(
                 color: Colors.black.withOpacity(0.8),
@@ -101,6 +96,76 @@ class MyApp extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ImageFader extends StatefulWidget {
+  const ImageFader({Key? key}) : super(key: key);
+
+  @override
+  _ImageFaderState createState() => _ImageFaderState();
+}
+
+class _ImageFaderState extends State<ImageFader> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  int _currentIndex = 0;
+  final List<String> _images = [
+    'assets/images/background (1).png',
+    'assets/images/background (2).png',
+    'assets/images/background (3).png',
+    'assets/images/background (4).png',
+    'assets/images/background (5).png',
+    'assets/images/background (6).png',
+    'assets/images/background (7).png',
+    'assets/images/background (8).png',
+    'assets/images/background (9).png',
+    'assets/images/background (10).png',
+    // Adicione mais imagens conforme necessário
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          _currentIndex = (_currentIndex + 1) % _images.length;
+        });
+        _controller.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        _controller.forward();
+      }
+    });
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            _images[_currentIndex],
+            fit: BoxFit.cover,
+          ),
+        ),
+        Positioned.fill(
+          child: FadeTransition(
+            opacity: _controller,
+            child: Container(
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

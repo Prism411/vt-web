@@ -29,7 +29,17 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/background.png
-    - assets/graphs/
+    - assets/images/background (1).png
+    - assets/images/background (2).png
+    - assets/images/background (3).png
+    - assets/images/background (4).png
+    - assets/images/background (5).png
+    - assets/images/background (6).png
+    - assets/images/background (7).png
+    - assets/images/background (8).png
+    - assets/images/background (9).png
+    - assets/images/background (10).png
+    - assets/images/background (11).png
+
 
 
