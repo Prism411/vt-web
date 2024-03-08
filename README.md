@@ -1,16 +1,15 @@
 # vtweb
 
-A new Flutter project.
+Parte web para visualização dos dados do projeto Visage Track
 
-## Getting Started
+## Como funciona?
 
-This project is a starting point for a Flutter application.
+> Para rodar você vai precisar primeiro da API em GO, depois da API de Python, e da API que se conecta ao unity, ligue >
+> em ordem:
 
-A few resources to get you started if this is your first Flutter project:
+- Api Primaria (Golang). 'main.go'
+- Api Secundaria (Python). 'Api_Communication.py'
+- Api Terciário (C#). 'communicationHandler.cs'
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Após isso esperar algum tempo até o ambiente unity ser criado e os dados atualizados para a api em GO lançar a web todas
+as imagens.
