@@ -3,6 +3,17 @@
 *.c -linguist-detectable
 *.cpp -linguist-detectable
 *.cmake -linguist-detectable
+*.txt -linguist-
+
+# Ignorar todos os arquivos CMakeLists.txt
+CMakeLists.txt linguist-generated=true
+
+# Ignorar arquivos específicos de CMake
+*.cmake linguist-generated=true
+
+# Ignorar diretório de build do CMake
+build/* linguist-generated=true
+
 
 # Detect
 *.dart linguist-detectable
