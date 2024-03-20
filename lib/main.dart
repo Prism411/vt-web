@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -107,9 +109,14 @@ class ImageFader extends StatefulWidget {
   _ImageFaderState createState() => _ImageFaderState();
 }
 
-class _ImageFaderState extends State<ImageFader> with SingleTickerProviderStateMixin {
+class _ImageFaderState extends State<ImageFader> with TickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _fadeIn;
+  late Animation<double> _fadeOut;
+  Timer? _timer;
   int _currentIndex = 0;
+  bool _isAnimating = false; // Adicionado para controlar o estado da animação
+
   final List<String> _images = [
     'assets/images/background (1).png',
     'assets/images/background (2).png',
@@ -121,48 +128,86 @@ class _ImageFaderState extends State<ImageFader> with SingleTickerProviderStateM
     'assets/images/background (8).png',
     'assets/images/background (9).png',
     'assets/images/background (10).png',
-    // Adicione mais imagens conforme necessário
   ];
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        setState(() {
-          _currentIndex = (_currentIndex + 1) % _images.length;
-        });
-        _controller.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _controller.forward();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 3), // Duração total para o fade in e fade out
+    );
+
+    _fadeIn = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(0.0, 0.5, curve: Curves.easeIn), // Primeira metade da animação
+      ),
+    );
+
+    _fadeOut = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(0.5, 1.0, curve: Curves.easeOut), // Segunda metade da animação
+      ),
+    );
+
+    _controller.addListener(() {
+      if (_controller.status == AnimationStatus.completed) {
+        _startTimer();
       }
     });
-    _controller.forward();
+
+    _startAnimation();
+  }
+
+  void _startTimer() {
+    if (_isAnimating) return; // Evita reiniciar a animação se já estiver em andamento
+    _isAnimating = true;
+
+    _timer = Timer(Duration(seconds: 1), () {
+      setState(() {
+        _currentIndex = (_currentIndex + 1) % _images.length;
+      });
+      _startAnimation();
+    });
+  }
+
+  void _startAnimation() {
+    _controller.forward(from: 0.0).then((_) {
+      _isAnimating = false;
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final nextIndex = (_currentIndex + 1) % _images.length;
     return Stack(
+      fit: StackFit.expand,
       children: [
-        Positioned.fill(
+        Image.asset(
+          _images[_currentIndex],
+          fit: BoxFit.cover,
+        ),
+        FadeTransition(
+          opacity: _fadeIn, // Fade in da próxima imagem
           child: Image.asset(
-            _images[_currentIndex],
+            _images[nextIndex],
             fit: BoxFit.cover,
           ),
         ),
-        Positioned.fill(
-          child: FadeTransition(
-            opacity: _controller,
-            child: Container(
-              color: Colors.black,
-            ),
+        FadeTransition(
+          opacity: _fadeOut, // Fade out da imagem atual
+          child: Image.asset(
+            _images[_currentIndex],
+            fit: BoxFit.cover,
           ),
         ),
       ],
